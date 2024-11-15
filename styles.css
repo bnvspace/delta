@@ -1,0 +1,113 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f8f9fa;
+}
+
+.container {
+    width: 80%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+thead th {
+    background-color: #f4f4f4; /* Серый фон для заголовков */
+    padding: 12px 8px;
+    font-weight: 600;
+    text-align: left;
+    color: #666;
+    border-bottom: 2px solid #ddd;
+}
+
+tbody tr {
+    background-color: #fff;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+
+tbody td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #eee;
+    color: #333;
+    text-align: left;
+}
+
+/* Стиль для колонок текущего дня, вчера и этого дня недели */
+tbody td:nth-child(2), /* Текущий день */
+tbody td:nth-child(3), /* Вчера */
+tbody td:nth-child(4) { /* Этот день недели */
+    font-weight: 500;
+    text-align: center;
+    padding: 8px 12px;
+}
+
+/* Стиль для цветовых индикаторов */
+.green {
+    color: #28a745; /* Зеленый для положительных изменений */
+    font-weight: bold;
+}
+
+.red {
+    color: #dc3545; /* Красный для отрицательных изменений */
+    font-weight: bold;
+}
+
+.gray {
+    color: #6c757d; /* Серый для нейтральных */
+    font-weight: bold;
+}
+
+/* Выделение текущего дня */
+td.today {
+    background-color: #eaf6ff; /* Светло-голубой фон для текущего дня */
+    font-weight: bold;
+}
+
+/* Стили для ячеек с процентными изменениями */
+td.percent-change {
+    font-size: 0.9em;
+    padding-left: 5px;
+    text-align: center;
+}
+
+/* Яркое выделение для фона на ячейках данных */
+.bg-blue {
+    background-color: #eaf6ff; /* Светло-голубой */
+}
+
+.bg-green {
+    background-color: #e8f5e9; /* Светло-зеленый */
+}
+
+.bg-red {
+    background-color: #fcebea; /* Светло-красный */
+}
+
+/* Выравнивание чисел вправо */
+tbody td:nth-child(2),
+tbody td:nth-child(3),
+tbody td:nth-child(4) {
+    text-align: center;
+}
+
+/* Дополнительное выделение для заголовков */
+thead th:first-child {
+    text-align: left;
+}
