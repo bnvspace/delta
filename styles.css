@@ -10,56 +10,68 @@ body {
 }
 
 .container {
-    width: 100%;
+    /* width: 100%; */
     margin-bottom: 30px;
     overflow-x: auto; /* Добавляем прокрутку для контейнера */
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    /* width: 100%; */
     border-collapse: collapse;
-    min-width: 800px;
-    max-width: 1200px;
+    /* min-width: 800px;
+    max-width: 1200px; */
 }
 
 table {
-    width: 100%;
+    /* width: 100%; */
     border-collapse: collapse;
-    min-width: 800px; /* Добавляем минимальную ширину, чтобы таблица не сжималась слишком сильно */
+    /* min-width: 800px; Добавляем минимальную ширину, чтобы таблица не сжималась слишком сильно */
     max-width: 1200px;
 }
-
+tr{
+    display: flex;
+}
 th, td {
+    
     color: #7d7b7b;
     padding: 15px 20px;
     border: 4px solid #fff;
     text-align: left;
     cursor: pointer;
     display: table-cell; /* Оставляем стандартное поведение ячеек таблицы */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-td:nth-child(1) {
-    width: 140px;
+td:nth-child(1),th:nth-child(1) {
+    width: 295px;
     background-color: #f5f5f5;
 }
 
-td:nth-child(2) {
+td:nth-child(2),th:nth-child(2) {
     width: 130px;
     text-align: center;
     background-color: #EDF8FF;
+    justify-content: end;
+}
+td:nth-child(3),th:nth-child(3) {
+    width: 130px;
+    text-align: left;
+    display: flex;
+    justify-content: center; /* Размещение контента по краям */
+    align-items: center; /* Центрирование по вертикали */
 }
 
-td:nth-child(3) {
-    width: 130px;
-    text-align: center;
-}
-
-td:nth-child(4) {
-    width: 130px;
+td:nth-child(4),th:nth-child(4) {
+    width: 150px;
     text-align: right;
+    justify-content: end;
 }
-
+.number{
+    margin-right: 10px;
+}
 th {
     background-color: #f2f2f2;
 }
@@ -88,7 +100,7 @@ th {
 }
 
 .percent-neutral {
-    color: gray;
+    color: green;
 }
 
 .gray {
@@ -99,10 +111,11 @@ th {
 .chart-container {
     display: flex;
     justify-content: center;
-    width: 70%;
+    width: 100%;
+    min-height: 400px;
     height: auto;
     overflow-x: auto; /* Прокрутка для контейнера с графиком */
-    margin: 25px auto;
+    margin: 25px 0;
 }
 
 canvas {
@@ -117,7 +130,8 @@ canvas {
         padding: 0 10px; /* Для отступов */
         min-width: 0;
     }
-
+    .chart-container {
+        min-height: 200px;}
     table {
         min-width: 100%; /* Убираем минимальную ширину, чтобы таблица была адаптивной */
         width: 100%; /* Разрешаем таблице занимать всю ширину */
@@ -141,4 +155,11 @@ canvas {
         width: 100%; /* График будет подстраиваться по ширине */
         height: auto;
     }
+}
+@media(max-width: 768px) {
+    th, td {
+        font-size: 10px;
+        padding: 10px;
+    }
+
 }

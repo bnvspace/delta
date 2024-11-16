@@ -6,9 +6,15 @@ function colorizeTable(tableId) {
     rows.forEach(row => {
         const cells = row.getElementsByTagName("td");
 
-        const currentValue = parseFloat(cells[1].innerText.replace(/\s+/g, '').replace(',', '.'));
-        const yesterdayValue = parseFloat(cells[2].innerText.replace(/\s+/g, '').replace(',', '.'));
-        const weekDayValue = parseFloat(cells[3].innerText.replace(/\s+/g, '').replace(',', '.'));
+        // Получаем значения с учётом пробелов и запятых
+        const currentValueText = cells[1].innerText;
+        const yesterdayValueText = cells[2].innerText;
+        const weekDayValueText = cells[3].innerText;
+
+        // Чистим пробелы для вычислений и заменяем запятую на точку
+        const currentValue = parseFloat(currentValueText.replace(/\s+/g, '').replace(',', '.'));
+        const yesterdayValue = parseFloat(yesterdayValueText.replace(/\s+/g, '').replace(',', '.'));
+        const weekDayValue = parseFloat(weekDayValueText.replace(/\s+/g, '').replace(',', '.'));
 
         if (isNaN(currentValue) || isNaN(yesterdayValue) || isNaN(weekDayValue)) {
             console.log("Ошибка: одно из значений не является числом.");
@@ -16,46 +22,53 @@ function colorizeTable(tableId) {
         }
 
         // Окраска для "Вчера"
-        let yesterdayText = `${yesterdayValue}`;
+        let yesterdayText = yesterdayValueText.replace(/\B(?=(\d{3})+(?!\d))/g, " ");  // Пробелы между тысячами
+        let percentChangeYesterday = "";
+        
         if (yesterdayValue < currentValue) {
-            const percentChangeYesterday = ((currentValue - yesterdayValue) / yesterdayValue) * 100;
-            yesterdayText += ` <span class="percent-green">+${Math.ceil(percentChangeYesterday)}%</span>`;
+            percentChangeYesterday = ` <span class="percent-green">+${Math.ceil(((currentValue - yesterdayValue) / yesterdayValue) * 100)}%</span>`;
             cells[2].classList.add("bg-green");
         } else if (yesterdayValue > currentValue) {
-            const percentChangeYesterday = ((yesterdayValue - currentValue) / currentValue) * 100;
-            yesterdayText += ` <span class="percent-red">-${Math.ceil(percentChangeYesterday)}%</span>`;
+            percentChangeYesterday = ` <span class="percent-red">-${Math.ceil(((yesterdayValue - currentValue) / currentValue) * 100)}%</span>`;
             cells[2].classList.add("bg-red");
         } else {
-            yesterdayText += ` <span class="percent-neutral">0%</span>`;
+            percentChangeYesterday = ` <span class="percent-neutral">0%</span>`;
             cells[2].classList.remove("bg-green", "bg-red");
         }
-        cells[2].innerHTML = yesterdayText;
+
+        // Разделение чисел и процентов на разные классы
+        const numberText = `<span class="number">${yesterdayText}</span>`;
+        const percentageText = `<span class="percent">${percentChangeYesterday}</span>`;
+        cells[2].innerHTML = numberText + percentageText;
 
         // Окраска для "Этот день недели"
+        const weekDayCell = cells[3];
         if (weekDayValue > currentValue) {
-            cells[3].classList.add("bg-red");
-            cells[3].classList.remove("bg-green");
+            weekDayCell.classList.add("bg-red");
+            weekDayCell.classList.remove("bg-green");
         } else if (weekDayValue < currentValue) {
-            cells[3].classList.add("bg-green");
-            cells[3].classList.remove("bg-red");
+            weekDayCell.classList.add("bg-green");
+            weekDayCell.classList.remove("bg-red");
         } else {
-            cells[3].classList.remove("bg-green", "bg-red");
+            weekDayCell.classList.remove("bg-green", "bg-red");
         }
     });
 }
 
+
 // Функция для обработки клика на строку таблицы
 function onRowClick(event) {
     const cells = event.target.parentElement.getElementsByTagName("td");
-    const rowData = Array.from(cells).slice(1).map(cell => parseInt(cell.innerText.replace(/\s/g, '')));
-    createChart(rowData);
+    // Преобразуем все значения в строках в массив чисел, игнорируя первый столбец
+    const rowData = Array.from(cells).slice(1).map(cell => parseFloat(cell.innerText.replace(/\s/g, '').replace(',', '.')));
+    createChart(rowData); // Передаем весь ряд данных
 }
 
 // Функция для создания графика
 let myChart;
 function createChart(data) {
     const ctx = document.getElementById('myChart').getContext('2d');
-    const chartLabels = ['0', '1', '2', '3', '4', '5']; // Метки для графика
+    const chartLabels = ['0', '1', '2', '3', '4', '5', '6']; // Метки для графика
 
     if (myChart) {
         myChart.destroy();
@@ -160,6 +173,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // Изначальный график
-    const initialData = [500521, 480521, 4805121]; // Пример значений для графика
+    const initialData = [0, 2800521, 3980521, 4800521, 3805121, 3580521, 4805121]; // Пример значений для графика
     createChart(initialData);
 });
