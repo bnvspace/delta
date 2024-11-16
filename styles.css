@@ -1,113 +1,144 @@
-* {
-    box-sizing: border-box;
-}
-
+/* Основные стили таблицы */
 body {
     font-family: Arial, sans-serif;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    height: 100vh;
-    margin: 0;
-    background-color: #f8f9fa;
+    margin-top: 10px;
+    padding: 0 10px; /* Добавим немного отступов для предотвращения вылазки на маленьких экранах */
+    box-sizing: border-box;
 }
 
 .container {
-    width: 80%;
-    max-width: 800px;
-    margin: 0 auto;
+    width: 100%;
+    margin-bottom: 30px;
+    overflow-x: auto; /* Добавляем прокрутку для контейнера */
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+    max-width: 1200px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    min-width: 800px; /* Добавляем минимальную ширину, чтобы таблица не сжималась слишком сильно */
+    max-width: 1200px;
 }
 
-thead th {
-    background-color: #f4f4f4; /* Серый фон для заголовков */
-    padding: 12px 8px;
-    font-weight: 600;
+th, td {
+    color: #7d7b7b;
+    padding: 15px 20px;
+    border: 4px solid #fff;
     text-align: left;
-    color: #666;
-    border-bottom: 2px solid #ddd;
-}
-
-tbody tr {
-    background-color: #fff;
-}
-
-tbody tr:hover {
-    background-color: #f1f1f1;
     cursor: pointer;
+    display: table-cell; /* Оставляем стандартное поведение ячеек таблицы */
 }
 
-tbody td {
-    padding: 10px 8px;
-    border-bottom: 1px solid #eee;
-    color: #333;
-    text-align: left;
+td:nth-child(1) {
+    width: 140px;
+    background-color: #f5f5f5;
 }
 
-/* Стиль для колонок текущего дня, вчера и этого дня недели */
-tbody td:nth-child(2), /* Текущий день */
-tbody td:nth-child(3), /* Вчера */
-tbody td:nth-child(4) { /* Этот день недели */
-    font-weight: 500;
+td:nth-child(2) {
+    width: 130px;
     text-align: center;
-    padding: 8px 12px;
+    background-color: #EDF8FF;
 }
 
-/* Стиль для цветовых индикаторов */
-.green {
-    color: #28a745; /* Зеленый для положительных изменений */
-    font-weight: bold;
-}
-
-.red {
-    color: #dc3545; /* Красный для отрицательных изменений */
-    font-weight: bold;
-}
-
-.gray {
-    color: #6c757d; /* Серый для нейтральных */
-    font-weight: bold;
-}
-
-/* Выделение текущего дня */
-td.today {
-    background-color: #eaf6ff; /* Светло-голубой фон для текущего дня */
-    font-weight: bold;
-}
-
-/* Стили для ячеек с процентными изменениями */
-td.percent-change {
-    font-size: 0.9em;
-    padding-left: 5px;
+td:nth-child(3) {
+    width: 130px;
     text-align: center;
 }
 
-/* Яркое выделение для фона на ячейках данных */
+td:nth-child(4) {
+    width: 130px;
+    text-align: right;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+/* Классы для окраски ячеек */
 .bg-blue {
-    background-color: #eaf6ff; /* Светло-голубой */
+    background-color: #e6f7ff;
 }
 
 .bg-green {
-    background-color: #e8f5e9; /* Светло-зеленый */
+    background-color: #e6ffe6;
+    color: #7d7b7b;
 }
 
 .bg-red {
-    background-color: #fcebea; /* Светло-красный */
+    background-color: #ffe6e6;
+    color: #7d7b7b;
 }
 
-/* Выравнивание чисел вправо */
-tbody td:nth-child(2),
-tbody td:nth-child(3),
-tbody td:nth-child(4) {
-    text-align: center;
+.percent-green {
+    color: green;
 }
 
-/* Дополнительное выделение для заголовков */
-thead th:first-child {
-    text-align: left;
+.percent-red {
+    color: red;
+}
+
+.percent-neutral {
+    color: gray;
+}
+
+.gray {
+    color: #6c757d;
+}
+
+/* Контейнер для графика */
+.chart-container {
+    display: flex;
+    justify-content: center;
+    width: 70%;
+    height: auto;
+    overflow-x: auto; /* Прокрутка для контейнера с графиком */
+    margin: 25px auto;
+}
+
+canvas {
+    max-width: 100%; /* Ограничиваем ширину графика, чтобы он не вылазил */
+    height: auto; /* Автоматическая настройка высоты для сохранения пропорций */
+}
+
+@media(max-width: 768px) {
+    /* Убираем фиксированную ширину таблицы на маленьких экранах */
+    .container {
+        width: 100%;
+        padding: 0 10px; /* Для отступов */
+        min-width: 0;
+    }
+
+    table {
+        min-width: 100%; /* Убираем минимальную ширину, чтобы таблица была адаптивной */
+        width: 100%; /* Разрешаем таблице занимать всю ширину */
+    }
+
+    th, td {
+        font-size: 14px; /* Уменьшаем шрифт для мобильных устройств */
+        padding: 10px; /* Уменьшаем отступы */
+    }
+
+    td:nth-child(1), td:nth-child(2), td:nth-child(3), td:nth-child(4) {
+        width: auto; /* Ширина ячеек автоматически подстраивается под содержимое */
+    }
+
+    /* Мобильный режим для графика */
+    .chart-container {
+        width: 90%; /* Уменьшаем ширину контейнера с графиком */
+    }
+
+    canvas {
+        width: 100%; /* График будет подстраиваться по ширине */
+        height: auto;
+    }
 }
