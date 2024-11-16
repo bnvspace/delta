@@ -1,4 +1,3 @@
-// Функция для динамической окраски ячеек на основе изменений
 function colorizeTable(tableId) {
     const table = document.getElementById(tableId);
     const rows = table.querySelectorAll("tbody tr");
@@ -6,12 +5,10 @@ function colorizeTable(tableId) {
     rows.forEach(row => {
         const cells = row.getElementsByTagName("td");
 
-        // Получаем значения с учётом пробелов и запятых
         const currentValueText = cells[1].innerText;
         const yesterdayValueText = cells[2].innerText;
         const weekDayValueText = cells[3].innerText;
 
-        // Чистим пробелы для вычислений и заменяем запятую на точку
         const currentValue = parseFloat(currentValueText.replace(/\s+/g, '').replace(',', '.'));
         const yesterdayValue = parseFloat(yesterdayValueText.replace(/\s+/g, '').replace(',', '.'));
         const weekDayValue = parseFloat(weekDayValueText.replace(/\s+/g, '').replace(',', '.'));
@@ -21,27 +18,30 @@ function colorizeTable(tableId) {
             return;
         }
 
-        // Окраска для "Вчера"
-        let yesterdayText = yesterdayValueText.replace(/\B(?=(\d{3})+(?!\d))/g, " ");  // Пробелы между тысячами
+        let yesterdayText = yesterdayValueText.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
         let percentChangeYesterday = "";
-        
+
         if (yesterdayValue < currentValue) {
-            percentChangeYesterday = ` <span class="percent-green">+${Math.ceil(((currentValue - yesterdayValue) / yesterdayValue) * 100)}%</span>`;
+            const percent = Math.ceil(((currentValue - yesterdayValue) / yesterdayValue) * 100);
+            percentChangeYesterday = ` <span class="percent-green">+${percent}%</span>`;
             cells[2].classList.add("bg-green");
+            cells[2].classList.remove("bg-red", "bg-neutral");
         } else if (yesterdayValue > currentValue) {
-            percentChangeYesterday = ` <span class="percent-red">-${Math.ceil(((yesterdayValue - currentValue) / currentValue) * 100)}%</span>`;
+            const percent = Math.ceil(((yesterdayValue - currentValue) / currentValue) * 100);
+            percentChangeYesterday = ` <span class="percent-red">-${percent}%</span>`;
             cells[2].classList.add("bg-red");
+            cells[2].classList.remove("bg-green", "bg-neutral");
         } else {
-            percentChangeYesterday = ` <span class="percent-neutral">0%</span>`;
+            percentChangeYesterday = ` <span class="percent-neutral">+0%</span>`;
+            cells[2].classList.add("bg-neutral");
             cells[2].classList.remove("bg-green", "bg-red");
         }
 
-        // Разделение чисел и процентов на разные классы
         const numberText = `<span class="number">${yesterdayText}</span>`;
         const percentageText = `<span class="percent">${percentChangeYesterday}</span>`;
+
         cells[2].innerHTML = numberText + percentageText;
 
-        // Окраска для "Этот день недели"
         const weekDayCell = cells[3];
         if (weekDayValue > currentValue) {
             weekDayCell.classList.add("bg-red");
@@ -55,20 +55,22 @@ function colorizeTable(tableId) {
     });
 }
 
-
-// Функция для обработки клика на строку таблицы
 function onRowClick(event) {
     const cells = event.target.parentElement.getElementsByTagName("td");
+
     // Преобразуем все значения в строках в массив чисел, игнорируя первый столбец
     const rowData = Array.from(cells).slice(1).map(cell => parseFloat(cell.innerText.replace(/\s/g, '').replace(',', '.')));
-    createChart(rowData); // Передаем весь ряд данных
+
+    // Проверяем, если значение равно 0%, то не добавляем его в данные
+    const filteredData = rowData.map(value => (value === 0 ? value : value));
+
+    createChart(filteredData); // Передаем весь ряд данных
 }
 
-// Функция для создания графика
 let myChart;
 function createChart(data) {
     const ctx = document.getElementById('myChart').getContext('2d');
-    const chartLabels = ['0', '1', '2', '3', '4', '5', '6']; // Метки для графика
+    const chartLabels = ['0', '1', '2', '3', '4', '5', '6'];
 
     if (myChart) {
         myChart.destroy();
@@ -80,14 +82,14 @@ function createChart(data) {
             labels: chartLabels,
             datasets: [{
                 label: 'Выручка, руб',
-                data: data,
+                data: data, // Используем только чистые данные без 0% изменений
                 borderColor: 'green',
                 backgroundColor: '#268f68',
                 borderWidth: 2,
                 pointBackgroundColor: '#268f68',
                 pointBorderColor: '#268f68',
                 pointRadius: 5,
-                tension: 0 // Сглаживание линий
+                tension: 0
             }]
         },
         options: {
@@ -104,11 +106,11 @@ function createChart(data) {
                 y: {
                     grid: {
                         drawTicks: false,
-                        color: 'transparent' // Убираем линии сетки
+                        color: 'transparent'
                     },
                     ticks: {
                         callback: function () {
-                            return '■'; // Символ вместо текста
+                            return '■';
                         },
                         padding: 0,
                         font: {
@@ -126,11 +128,11 @@ function createChart(data) {
                 x: {
                     grid: {
                         drawTicks: false,
-                        color: 'transparent' // Убираем линии сетки
+                        color: 'transparent'
                     },
                     ticks: {
                         callback: function () {
-                            return '■'; // Символ вместо текста
+                            return '■';
                         },
                         padding: -3,
                         font: {
@@ -155,13 +157,10 @@ function createChart(data) {
     });
 }
 
-// Вызов функций после загрузки страницы
 document.addEventListener("DOMContentLoaded", function() {
-    // Вызов цветовых функций для каждой таблицы
     colorizeTable("data-table");
     colorizeTable("data-table-2");
 
-    // Добавление обработчика клика на строки обеих таблиц
     const rows1 = document.querySelectorAll("#data-table tbody tr");
     rows1.forEach(row => {
         row.addEventListener("click", onRowClick);
@@ -172,7 +171,6 @@ document.addEventListener("DOMContentLoaded", function() {
         row.addEventListener("click", onRowClick);
     });
 
-    // Изначальный график
-    const initialData = [0, 2800521, 3980521, 4800521, 3805121, 3580521, 4805121]; // Пример значений для графика
+    const initialData = [0, 2800521, 3980521, 4800521, 3805121, 3580521, 4805121];
     createChart(initialData);
 });
